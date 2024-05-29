@@ -533,6 +533,21 @@ defmodule Instructor do
     ]
   end
 
+  defp echo_response(%{
+         "choices" => [
+           %{
+        "message" => %{"content" => content}
+           }
+         ]
+       }) do
+    [
+      %{
+        role: "user",
+        content: content
+      }
+    ]
+  end
+
   defp params_for_mode(mode, response_model, params) do
     json_schema = JSONSchema.from_ecto_schema(response_model)
 
