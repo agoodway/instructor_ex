@@ -538,7 +538,7 @@ defmodule Instructor do
   defp echo_response(%{
          "choices" => [
            %{
-        "message" => %{"content" => content}
+             "message" => %{"content" => content}
            }
          ]
        }) do
@@ -575,7 +575,13 @@ defmodule Instructor do
           """
         }
 
-        messages = [sys_message | messages]
+        # do not re-add the system message if it's already there
+        messages =
+          if Enum.any?(messages, fn message -> message == sys_message end) do
+            messages
+          else
+            [sys_message | messages]
+          end
 
         case mode do
           :md_json ->
