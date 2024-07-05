@@ -485,8 +485,15 @@ defmodule Instructor do
   defp parse_response_for_mode(:md_json, %{"choices" => [%{"message" => %{"content" => content}}]}),
        do: Jason.decode(content)
 
-  defp parse_response_for_mode(:json, %{"choices" => [%{"message" => %{"content" => content}}]}),
-    do: Jason.decode(content)
+  defp parse_response_for_mode(:json, %{"choices" => [%{"message" => %{"content" => content}}]}) do
+    case Jason.decode(content) do
+      {:ok, content} ->
+        {:ok, content}
+
+      {:error, _} ->
+        content |> String.replace("\n", "\\n") |> Jason.decode()
+    end
+  end
 
   defp parse_response_for_mode(:tools, %{
          "choices" => [
